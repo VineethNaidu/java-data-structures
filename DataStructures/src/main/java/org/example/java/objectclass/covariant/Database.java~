@@ -1,0 +1,27 @@
+package org.example.java.objectclass;
+
+//Real World Example
+class Database {
+    Database connect() {
+        System.out.println("Connected to Database");
+        return this;
+    }
+}
+
+class MySQLDatabase extends Database {
+    @Override
+    MySQLDatabase connect() {
+        System.out.println("Connected to MySQL Database");
+        return this;
+    }
+
+    void executeQuery() {
+        System.out.println("Executing MySQL Query");
+    }
+
+    public static void main(String[] args) {
+        MySQLDatabase db = new MySQLDatabase();
+        db.connect().executeQuery(); // ✅ Method chaining
+    }
+}
+

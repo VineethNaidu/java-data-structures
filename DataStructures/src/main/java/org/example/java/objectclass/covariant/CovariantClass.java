@@ -1,4 +1,4 @@
-package org.example.java.objectclass;
+package org.example.java.objectclass.covariant;
 
 /*
 1. Before Java 5, overridden methods had to return the exact same type as the parent method.
@@ -35,6 +35,7 @@ class Animal {
 
 class Dog extends Animal{
 
+    //Covariant Return Type which overridden method from Superclass returns subclass type
     @Override
     Dog create() {
         return new Dog();
