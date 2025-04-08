@@ -135,10 +135,4 @@ Design Principles in Software Development
             class Car {
                 private Engine engine; // "Has-a" relationship
             }
-
-
-
-
-
-
  */
