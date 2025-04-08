@@ -1,0 +1,181 @@
+Software Development Quality Attributes
+
+1. Scalability - Handles Increasing Load Efficiently
+2. Reliability - Consistently Performs Without Failure
+3. Maintainability - Ability to Modify, Debug, and Extend Code
+4. Readability - Easy to Understand and Maintain for Developers
+5. Extensibility - Ability to Add New Functionality
+6. Security - Protects Against Unauthorized Access
+7. Performance - Efficiently Executes Tasks Under Different Loads
+8. Availability - Consistently Available for Users (99.99% Uptime)
+
+1. Scalability
+    Application has ability to handle more traffic and work loads(more users, data, traffic)
+    over time without performance degradation.
+
+    Types of Scalability:
+        1. Vertical Scaling (Scaling Up)
+            Adding more power (CPU, RAM) to a single machine.
+            Example: Upgrading a single database server to handle more traffic.
+
+        2. Horizontal Scaling (Scaling Out)
+            Adding more machines to distribute the load.
+            Example: Adding multiple web servers behind a load balancer.
+
+    Eg: Google Search, Netflix
+
+    Best Practices for Scalability:
+        ✔ Use Microservices instead of monolithic architecture.
+        ✔ Implement Load Balancers (NGINX, AWS ELB).
+        ✔ Use Database Sharding or Read Replicas.
+        ✔ Use Asynchronous Processing (Kafka, RabbitMQ).
+
+2. Reliability
+    System consistently performs without failure under expected conditions.
+
+    Key Aspects:
+        1. Fault Tolerance – Can recover from hardware/software failures.
+        2. Redundancy – Backup components to avoid single points of failure.
+        3. Error Handling – Graceful error recovery.
+
+    Real-World Example
+        1. Amazon AWS: Uses multiple data centers to ensure uptime, even if one fails.
+        2. Banking Systems: Handle millions of transactions with failover mechanisms.
+
+    Best Practices for Reliability
+        ✔ Use Replication & Backups for databases.
+        ✔ Implement Circuit Breaker Patterns (Netflix Hystrix).
+        ✔ Perform Chaos Testing (Simulating failures).
+        ✔ Monitor with Prometheus + Grafana.
+
+3. Maintainability:
+    Ability to modify, debug, and extend code without breaking existing functionality.
+
+    Key Aspects:
+        1. Modularity – Breaking software into small, reusable components.
+        2. Version Control – Using Git for tracking changes.
+        3. Automated Testing – Ensuring changes don’t introduce new bugs.
+
+    Real-World Example
+        1. Linux Kernel: Open-source with clear modularity and version control.
+        2. Enterprise Software: Uses CI/CD pipelines for safe updates.
+
+    Best Practices for Maintainability
+        ✔ Follow SOLID Principles (Single Responsibility, Open/Closed, etc.).
+        ✔ Write Unit & Integration Tests (JUnit, Mockito).
+        ✔ Document code & APIs properly.
+        ✔ Use CI/CD Pipelines (Jenkins, GitHub Actions).
+
+4. Readability:
+    Code is easy to understand and maintain for Developers.
+
+    Key Aspects:
+        1. Naming Conventions – Consistent naming for variables, functions, etc.
+        2. Comments – Adding comments to explain complex code.
+        3. Formatting – Consistent indentation, spacing, etc.
+
+    Real-World Example
+        1. Python: Uses PEP8 for code formatting.
+        2. Java: Uses Javadoc for API documentation.
+
+    Best Practices for Readability
+        ✔ Follow naming conventions for variables, functions, etc.
+        ✔ Use comments to explain complex code.
+        ✔ Use consistent indentation, spacing, etc.
+        ✔ Document code & APIs properly.
+
+5. Extensibility:
+    Ability to add new functionality without modifying existing code.
+
+    Key Aspects:
+        1. Modularity – Breaking software into small, reusable components.
+        2. Open/Closed Principle – Adding new features without modifying existing code.
+        3. Dependency Injection – Injecting dependencies via constructor or setter methods.
+
+    Real-World Example
+        1. Spring Boot: Uses Dependency Injection for easy extensibility.
+        2. Angular: Uses Dependency Injection for easy extensibility.
+        3. Chrome Extensions: Users can add new functionality to Chrome.
+        4. Spring Boot Framework: Allows easy integration of new services.
+
+    Best Practices for Extensibility
+        ✔ Follow SOLID Principles (Single Responsibility, Open/Closed, etc.).
+        ✔ Use Dependency Injection for easy extensibility.
+        ✔ Document code & APIs properly.
+        ✔ Use Interface-Based Design.
+        ✔ Keep code modular and loosely coupled.
+        ✔ Use Composition over Inheritance.
+
+6. Security:
+    Security ensures software is protected against unauthorized access, data breaches,
+    and vulnerabilities.
+
+    Key Aspects:
+        1. Authentication – Verifying user identity.
+        2. Authorization – Granting access based on user roles.
+        3. Encryption – Protecting data at rest and in transit.
+        4. Input Validation – Preventing malicious input.
+
+    Real-World Example
+        1. Online Banking Systems: Use MFA (Multi-Factor Authentication).
+        2. E-commerce Platforms: Encrypt payment details.
+        3. Google Cloud Platform: Uses IAM for authentication and authorization.
+
+    Best Practices for Security
+        ✔ Use SSL/TLS for secure communication.
+        ✔ Implement input validation and data sanitization.
+        ✔ Use strong passwords and authentication tokens.
+        ✔ Use Access Control Lists (ACLs) for authorization.
+        ✔ Use multi-factor authentication (MFA).
+        ✔ Use encryption for sensitive data.
+        ✔ Use continuous monitoring for security vulnerabilities.
+        ✔ Perform Penetration Testing.
+        ✔ Implement Role-Based Access Control (RBAC).
+
+7. Performance:
+    Performance is how efficiently software executes tasks under different loads.
+
+    Key Aspects:
+        1. Low Latency – Fast response times.
+        2. High Throughput – Handling large volumes of requests.
+        3. Efficient Memory Usage – Avoid memory leaks.
+        4. Optimized Database Queries – Use indexing and caching.
+
+    Real-World Example
+        1. YouTube: Uses CDN for faster video streaming.
+        2. Facebook: Uses GraphQL for efficient data fetching.
+
+    Best Practices for Performance
+        1. Scalability – Ability to handle more traffic and workloads.
+        2. Caching – Improving performance by storing frequently accessed data.
+        3. Load Balancing – Distributing load across multiple servers.
+        4. Optimization – Improving performance through code optimization.
+        5. Optimize SQL Queries (Indexing, Sharding).
+        6. Use Asynchronous Processing (Kafka, RabbitMQ).
+        7. Use Caching (Redis, Memcached).
+        8. Monitor with Prometheus + Grafana.
+
+8. Availability:
+    Ability to provide uninterrupted access to users and services.
+
+    Key Aspects:
+        1. Uptime – Measured in 99.99% availability (4 nines).
+        2. Disaster Recovery – Backup mechanisms in case of failure.
+        3. High Availability – Ensuring system is always available.
+        4. Resiliency – Ability to recover from failures.
+        5. Load Balancing – Distributing load across multiple servers.
+
+    Real-World Example
+        1. Amazon AWS: Uses multiple data centers to ensure uptime, even if one fails.
+        2. Kubernetes: Uses multiple control planes for high availability.
+
+    Best Practices for Availability
+        1. Use Replication & Backups for databases.
+        2. Implement Circuit Breaker Patterns (Netflix Hystrix).
+        3. Perform Chaos Testing (Simulating failures).
+        4. Monitor with Prometheus + Grafana.
+
+
+
+
+
