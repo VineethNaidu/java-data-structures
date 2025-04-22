@@ -42,16 +42,16 @@ Open/Closed Principle (OCP)
     }
 
     Problems with this Approach
-    ❌ Breaks OCP: Every time a new discount type (e.g., "VIP") is added, we have to modify the calculateDiscount method.
-    ❌ Difficult to Maintain: If there are many discount types, the if-else chain will become unmanageable.
-    ❌ Not Scalable: If multiple developers work on calculateDiscount, conflicts may occur.
+        Breaks OCP: Every time a new discount type (e.g., "VIP") is added, we have to modify the calculateDiscount method.
+        Difficult to Maintain: If there are many discount types, the if-else chain will become unmanageable.
+        Not Scalable: If multiple developers work on calculateDiscount, conflicts may occur.
  */
 
 
  /*
     Good Example (Follows OCP using Polymorphism)
-    ✅ We introduce an interface (DiscountStrategy) and create separate classes for each discount type.
-    ✅ Now, we extend functionality without modifying existing code.
+        We introduce an interface (DiscountStrategy) and create separate classes for each discount type.
+        Now, we extend functionality without modifying existing code.
  */
 
 interface DiscountStrategy {

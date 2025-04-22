@@ -4,6 +4,8 @@ package org.example.designpatterns.designpatterns.creational.singleton;
 Def: Singleton Pattern ensures that a class has only one instance and provides
      a global point of access to it.
 
+     Mostly we use for Application Configuration (DB connection, logging, cache etc...,)
+
      Eg: A Configuration Manager
             A logging class
             A Connection Pool

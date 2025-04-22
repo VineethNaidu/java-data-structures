@@ -12,4 +12,4 @@ Types of Creational Design Patterns:
 3. Singleton Pattern
 4. Builder Pattern
 5. Prototype Pattern
- */
+*/

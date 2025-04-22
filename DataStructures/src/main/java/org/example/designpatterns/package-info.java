@@ -29,7 +29,7 @@ Design Principles in Software Development
     Real-Time Example:
         Consider a User class that stores user data, validates input, and sends emails.
         This violates SRP because a single class is handling multiple responsibilities.
-    ✅ Fix:
+    Fix:
         Create separate classes:
         User (Stores user data)
         UserValidator (Validates input)
@@ -46,7 +46,7 @@ Design Principles in Software Development
         1. Suppose we have a DiscountCalculator class that calculates discounts for regular and premium customers.
            If we introduce a new VIP customer, we would need to modify the existing class.
 
-    ✅ Fix:
+    Fix:
         Create a new interface (IDiscountCalculator) and extend it for different discount types.
         Instead of modifying the class, create an interface and extend behavior using subclasses (RegularDiscount, PremiumDiscount, VIPDiscount).
 
