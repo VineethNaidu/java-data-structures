@@ -1,4 +1,4 @@
-package org.example.java;
+package org.example.java.record;
 
 import java.util.List;
 import java.util.Objects;

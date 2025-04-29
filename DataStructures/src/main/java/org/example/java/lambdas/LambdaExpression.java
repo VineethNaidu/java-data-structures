@@ -26,11 +26,22 @@ interface Consumer<T> {
 //    }
 }
 
+@FunctionalInterface
+interface TwoParameterLambdaExpression {
+    int operation(int a, int b);
+}
 
+// (parameters) -> { expression }
 public class LambdaExpression {
     public static void main(String[] args) {
         Runnable runnable = () -> System.out.println("Hello Functional Interface");
         runnable.run();
+
+        TwoParameterLambdaExpression sum = (a, b) -> a + b;
+        TwoParameterLambdaExpression sub = (a, b) -> a - b;
+
+        System.out.println("Sum: " + sum.operation(10, 20));
+        System.out.println("Sub: " + sub.operation(20, 10));
     }
 }
 

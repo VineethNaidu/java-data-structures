@@ -1,0 +1,146 @@
+Q1. Difference Between map vs flatmap?
+
+Ans:
+Feature 	map()	                    flatMap()
+Transforms	Element to another element	Element to a stream of elements
+Output	    Stream of mapped elements	Flattened stream of all elements
+Use case	Basic transformation	    Flattening nested structures like List<List>
+
+Q2: Group employees by department, and calculate average salary per department.
+
+{
+   "HR": 70000.0,
+   "IT": 90000.0,
+   "Finance": 80000.0
+}
+
+import java.util.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.*;
+
+class Employee {
+    String name;
+    String department;
+    double salary;
+
+    Employee(String name, String department, double salary) {
+        this.name = name;
+        this.department = department;
+        this.salary = salary;
+    }
+
+    // Getters...
+    public String getDepartment() { return department; }
+    public double getSalary() { return salary; }
+}
+
+public class GroupingExample {
+    public static void main(String[] args) {
+        List<Employee> employees = List.of(
+            new Employee("Vini", "IT", 95000),
+            new Employee("Bob", "Finance", 85000),
+            new Employee("Alice", "IT", 87000),
+            new Employee("Eve", "Finance", 78000),
+            new Employee("Tom", "HR", 70000)
+        );
+
+        Map<String, Double> avgSalaryByDept = employees.stream()
+            .collect(groupingBy(
+                Employee::getDepartment,
+                averagingDouble(Employee::getSalary)
+            ));
+
+        System.out.println(avgSalaryByDept);
+    }
+}
+
+Q3: forEach vs peek
+
+forEach:
+    1. Terminal operation
+    2. Once you call forEach, the stream is consumed.
+    3. can't reuse it once used
+Eg: List<String> names = List.of("Vini", "Bob", "Alice");
+    names.stream().forEach(System.out::println);  // consumes the stream
+
+peek: mostly used for logging/debugging
+    1. Intermediate operation
+    2. Does not trigger the stream pipeline on its own —
+       you can reuse it if you still need a terminal operation (like collect, count, etc).
+
+Eg: names.stream()
+        .peek(name -> System.out.println("Peek: " + name))
+        .map(String::toUpperCase)
+        .collect(Collectors.toList());
+
+Note: Without Terminal operation, you can't use peek
+Stream.of("one", "two", "three")
+    .peek(s -> System.out.println("Peeked: " + s)); // won't print anything
+
+Q4: You're given a list of orders. Each order has:
+
+    an id (int)
+    a status (String: "NEW", "PROCESSING", "DELIVERED")
+
+    You need to:
+    Filter only "NEW" orders
+    Print each filtered order using peek() (for debugging)
+    Collect them into a list
+    After collecting, print each one using forEach()
+
+Sol: List<Order> newOrders = orders.stream()
+                 .filter(order -> order.getStatus().equals("NEW"))
+                 .peek(order -> System.out.println("[PEEK] " + order))
+                 .collect(Collectors.toList());
+
+             newOrders.forEach(order -> System.out.println("[FILTERED ORDER] " + order));
+
+
+Question 5: Group and Count
+    You have a list of Book objects with:
+    title (String)
+    category (e.g., "Fiction", "Science", "History")
+
+    Your task:
+    Count how many books are in each category.
+
+    output:
+    Fiction: 2
+    Science: 3
+    History: 1
+
+    Sol: Map<String, Integer> bookCountByCategory = books.stream()
+                .collect(Collectors.groupingBy(
+                    book -> book.getCategory(), // Book::getCategory,
+                    Collectors.summingInt(book -> 1) // Collectors.counting()
+                ));
+
+                bookCountByCategory.forEach((category, count) -> {
+                    System.out.println(category + ": " + count);
+                });
+
+Question 6: Group by Department and Sum Salaries
+    You have a list of Employee objects with:
+
+    name (String)
+    department (String)
+    salary (double)
+
+    Your task:
+    Group employees by their department.
+    Sum the total salary for each department.
+
+    Print the result in the format:
+    IT: 210000.0
+    HR: 70000.0
+    Finance: 150000.0
+
+    Sol: Map<String, Double> departmentSalaries = employees.stream()
+                     .collect(Collectors.groupingBy(
+                         Employee::getDepartment,           // Group by department
+                         Collectors.summingDouble(Employee::getSalary) // Sum the salaries
+                     ));
+
+                 // Output the result
+                 departmentSalaries.forEach((department, salary) ->
+                     System.out.println(department + ": " + salary));
