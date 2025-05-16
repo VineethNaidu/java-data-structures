@@ -7,6 +7,8 @@ interface RecordInterface {
     void display(String color);
 }
 
+// record -> final class
+// fields -> private final in default
 public record Record(String name, int age) implements RecordInterface {
     //Variables of Record
 //  public int weight = 50; we can not declare instance variable in record

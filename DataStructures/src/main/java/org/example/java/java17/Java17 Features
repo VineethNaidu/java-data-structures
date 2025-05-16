@@ -1,0 +1,75 @@
+Java 17:
+Features Mainly:
+JVM Enhancements
+Library Improvements
+New Language Features
+
+1. Sealed Classes (Finalized in java 17)
+
+Def: Restrict which classes can extend or implement a class/interface.
+Eg: public sealed class Animal permits Dog, Cat {}
+
+    final class Dog extends Animal {}
+    final class Cat extends Animal {}
+    // class Snake extends Animal {} ❌ Not allowed
+Reason: Better control over inheritance.
+        Enables exhaustive switch logic.
+
+2. Records
+Def: Record is a special class for immutable data-holding.
+
+Eg: public record Person(String name, int age) {}
+
+    Person p1 = new Person("Vini", 25);
+    p1.name();
+    p1.age();
+
+3. Pattern Matching: Simplify type checks and casting in switch statements
+Eg: static void print(Object obj) {
+        switch (obj) {
+            case String s -> System.out.println("String: " + s);
+            case Integer i -> System.out.println("Integer: " + i);
+            default -> System.out.println("Unknown type");
+        }
+    }
+
+
+Java 21:
+Features:
+
+1. Records
+Deconstruct records directly in if and switch.
+
+record Person(String name, int age) {}
+
+static void print(Person p) {
+    if (p instanceof Person(String name, int age)) {
+        System.out.println(name + " is " + age + " years old.");
+    }
+}
+
+2. Pattern Matching for switch
+static void test(Object obj) {
+    switch (obj) {
+        case String s when s.length() > 5 -> System.out.println("Long string");
+        case Integer i -> System.out.println("Integer: " + i);
+        default -> System.out.println("Other");
+    }
+}
+
+3. Virtual Threads: Lightweight, fast, and scalable threads — huge for concurrency!
+
+Runnable task = () -> System.out.println(Thread.currentThread());
+Thread.startVirtualThread(task);
+
+4. String Template:
+
+Simplifies string concatenation with embedded expressions.
+
+String name = "Vini";
+int age = 25;
+
+// Not yet usable without enabling preview
+// String message = STR."Hello \{name}, age: \{age}";
+
+

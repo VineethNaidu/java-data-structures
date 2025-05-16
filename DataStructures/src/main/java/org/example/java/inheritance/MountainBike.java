@@ -4,6 +4,7 @@ public class MountainBike extends Bicycle {
 
     // the MountainBike subclass adds one field
     public int seatHeight;
+//  public int gear;  Override parent class field
 
     //1. If Parent Class has Default Constructor, Subclass Constructor doesn't need to call Parent Class Constructor. It'll call internally.
     //2. If Parent Class has Parameter Constructor but not default Constructor, Subclass Constructor must call Parent Class Parameter Constructor.
@@ -36,6 +37,7 @@ public class MountainBike extends Bicycle {
 
         //Child Class reference type can hold Parent Class Object
         Bicycle bicycle1 = new Bicycle();
+        MountainBike mountainBike1 = new MountainBike();
 //      MountainBike mountainBike1 = bicycle1; can't directly assign to parent class reference to Subclass reference type. throws compile time error.
 //      MountainBike mountainBike1 = (MountainBike)bicycle1; //It'll throw runtime error. check instance if it is child class we can assign it to parent reference/
 

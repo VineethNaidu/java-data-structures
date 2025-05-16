@@ -1,0 +1,25 @@
+java8 - Mar 18, 2014
+
+1. Lambda Expressions -> concise functional code
+2. Functional Interfaces -> interfaces with only one abstract method
+3. Stream APIs -> Efficient data manupulation/processing
+4. Optional -> Null handling
+5. Collection API Improvements -> e.g removeIf, removeAll
+6. Default Methods
+7. Static methods
+8. method references
+9. Comparable and Comparator
+10. forEach Method in iterable Interface
+
+
+1. Lambda Expressions: An instance of the functional interface or else
+                       clear and concise way to represent a method in functional interface
+
+Why were default and static methods introduced in Java 8?
+Reason: If you added a new method to an interface, all implementing classes had to override it → 🔥 breaks existing code!
+Sol: Introduce default methods with implementation → so existing classes don't need to change.
+
+Feature	            Purpose
+default methods	    Add new behavior to interfaces without breaking old code
+static methods	    Provide utility/helper methods directly in the interface
+Functional support	Enable cleaner APIs using functional programming concepts

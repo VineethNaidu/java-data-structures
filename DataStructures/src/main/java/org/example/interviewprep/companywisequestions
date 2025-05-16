@@ -1,0 +1,252 @@
+HashTable vs HashMap
+Java21, 17, 8 release features
+Transactions in Java/Microservices
+@Autowired how many ways
+Records in java
+Sealed Class in Java
+SpringBoot, Spring Security, Spring Cloud
+MicroServices
+Apache Kafka
+RabbitMQ
+Redis
+OAuth
+CI/CD
+Docker/Kubernetes
+Hibernate/JPA
+MongoDB
+SAGA DP
+Stored Procedures
+Collision Techniques
+Views
+Database Interview Preparation
+How do you migrate one version of java into other version?
+Thread ExecuterService in Java
+How we perform Async Task in Java?
+How static methods will test using JUnit
+Thread Executer Service
+Async Task
+
+How Service A & Service B have same data consistency? If Service B success but service A, D is not updated. How do we handle.
+Eventual Consistency
+Saga Pattern (Even Driven, Decentralized & Centralized)
+
+Idempotent Service/Request -> Atomicity
+200 & 201 -> Ok & Created
+
+Kafka Topic/Partitioning
+How we implement Microservice?
+OAuth / JWT how we debug
+Intercommunication B/W services?
+What If we have 100 services But one of service is failed how to handle in this situation and how we handle data consistency?
+Spring Cloud
+Spring Cloud Gateway Config
+Eureka Server
+
+Nissum:
+How we load config properties
+Annotations we use in Entity
+can Interface have mutliple default method and why we need default methods.
+fields in interface default what?
+@Component vs @Bean
+git fetch vs git pull
+
+NTT Data:
+Indexing
+How HashMap Works
+transient Keyword
+Serialization vs Deserialization How it turns Java Object
+Bean Life Cycle
+
+Cognizant:
+Java Memory Management:
+Java Memory Leaks
+Circuit Breaker -> open/closed principle
+Transaction Management
+How we maintain data consistency throughout the microservice
+SQL Injections
+Optimistic/Pessistic Concurrency/Lock Control
+Techniques that we follow convert monolithic -> Microservice
+volatile Keyword
+
+Circuit Breaker:
+Fault Tolerance Mechanism
+Circuit Breaker: open/closed principle
+
+Closed State -> No Circuit Breaker
+Open State -> Circuit Breaker
+Half Open State -> Circuit Breaker
+
+Life Cycle:
+Closed State -> Open State -> Half Open State -> Closed State
+
+SQL Injection:
+Inject malicious code into the query.
+
+How to prevent:
+Use parameterized queries (Treat User input as data not query string)
+Use ORM Frameworks (Hibernate, JPA)
+Input Validation before querying.
+
+Optimistic vs Pessimistic Locks:
+
+Comparison Table
+Feature	        Optimistic Locking	Pessimistic Locking
+Locking time	At update time	    At read time
+Performance	    High (non-blocking)	Lower (blocking)
+Best for	    Low-contention      High-contention systems
+                systems
+Conflict
+handling	    At commit	        Prevented via locking
+Deadlock risk	None	            Possible
+
+Volatile Keyword: Visibility (Scope) across all multiple threads.
+    If one thread modifies volatile keyword, it is visible to all other threads immediately.
+
+Without volatile threads may cache the value in local or cpu registers.
+with volatile it is stored in main thread and visible to all threads.
+
+Convert Monolithic to Microservices:
+
+It is a complex process that requires careful planning, strategy and implementation.
+The goal is to decompose the tightly coupled monolith into independent, deployable services while maintaining stability and minimizing downtime.
+
+Techniques:
+1. Strangler Pattern (Incremental Decomposition)
+2. Identify Bounded Context (Domain Driven Design) eg: (User, Order, Payment)
+3. Modularize Monolith (UI, Code, Database)
+4. Create Service Contracts (create Restful/gRPC API interface b/w services)
+
+Strangler Pattern:
+The Strangler Pattern is a migration strategy used to gradually refactor or replace a
+legacy monolithic system by building new functionality as microservices around it. Over time,
+the new system "strangles" the old one until it can be safely decommissioned.
+
+Why it is called Strangler?
+1. It grows around a host tree, slowly replacing it.
+2. Similarly, new services grow around the monolith, replacing its parts until it's gone.
+
+Benefits:
+1. Low Risk
+2. Continuous delivery
+3. No Downtime (Supports legacy systme)
+4. Easy to scale
+
+Steps to implement Strangler Pattern:
+1. Analyse the monolith
+2. Introduce an API Gateway (Spring Cloud Gateway, NGINX, Kong, Zuul)
+   Set up an API gateway to route traffic.
+   Direct some calls to the monolith and others to new microservices.
+3. Select a function to decommission (like User Profile, Order, Payment).
+4. Build New Microservice
+5. Redirect Traffic to that microservice. rest calls monolith
+6. Repeat until all features are decommissioned.
+
+DLQ: Dead Letter Queue
+DLQ is a queue that holds messages that could not be processed.
+
+Fault Tolenrance Techinques:
+Technique	                Purpose
+Circuit Breaker	            Prevent cascading failures
+Event-Driven + Kafka	    Decouple services + retry failed ones
+SAGA Pattern	            Ensure rollback on partial failures
+Idempotency	                Prevent duplicate effects on retry
+Transactional Outbox	    Ensure DB + event consistency
+Dead Letter Queue	        Capture irrecoverable events
+Monitoring + Alerting	    Fast failure detection & response
+
+Idempotency In Microservice:
+
+Concept	                Description
+Idempotent Operation	Same request → same result → no side effects
+Benefits	            Safe retries, consistency, prevents duplication
+How to Implement	    Use Idempotency-Key, request tracking, API design
+
+SAGA Pattern:
+Use Saga Pattern for intercommunication between service transactions. and also handle partial failures.
+
+1. Event-Driven + Kafka (De-Centralized):
+Services listen for events and react.
+No central controller.
+Simple and decoupled, but harder to track and debug as complexity grows.
+
+✅ Example:
+Order Service → emits OrderCreated →
+Inventory Service → emits StockReserved →
+Payment Service → emits PaymentCompleted →
+Shipping Service → emits OrderShipped
+
+2. SAGA Pattern (Centralized):
+A central Saga Orchestrator tells each service what to do.
+Services report back success/failure.
+Easier to track, test, and manage logic centrally.
+
+Saga Orchestrator → tells Order Service to create order
+↓
+Orchestrator → tells Inventory Service to reserve stock
+↓
+Orchestrator → tells Payment Service to charge
+↓
+Orchestrator → tells Shipping Service to ship
+
+Undo Steps:
+| Service           | Action         | Compensating Action |
+| ----------------- | -------------- | ------------------- |
+| Order Service     | Create Order   | Cancel Order        |
+| Inventory Service | Reserve Stock  | Release Stock       |
+| Payment Service   | Charge Payment | Refund Payment      |
+
+
+
+Key Fault-Tolerant Mechanisms
+Mechanism	Purpose
+✅ Retry	Retry failed operations automatically
+⏱️ Timeout	Limit wait time to avoid hanging requests
+🔀 Circuit Breaker	Stop calling failing services temporarily
+💌 Fallback	Provide a default response when failure occurs
+📦 Bulkhead	Isolate resources to prevent cascading failures
+🛠️ Rate Limiting	Control traffic to avoid overload
+🔄 Load Balancing	Distribute traffic across multiple service instances
+🔍 Health Checks	Detect failures early and redirect traffic
+🧾 Graceful Degradation	Deliver partial features instead of full failure
+🧠 Service Mesh	Automatically applies many of these patterns (e.g., Istio)
+
+Retry Mechanism:
+resilience4j.retry:
+  instances:
+    backendService:
+      maxAttempts: 3
+      waitDuration: 1s
+
+@Retry(name = "backendService")
+public String fetchData() {
+    return restTemplate.getForObject("http://downstream/api", String.class);
+}
+
+2. Circuit Breaker:
+@CircuitBreaker(name = "paymentService", fallbackMethod = "fallbackPayment")
+public String callPaymentService() {
+    return restTemplate.getForObject("http://payment/api", String.class);
+}
+
+public String fallbackPayment(Throwable t) {
+    return "Payment service unavailable, try later.";
+}
+
+
+3. Bulkhead Pattern:
+@Bulkhead(name = "paymentService")
+public String callPaymentService() {
+    return restTemplate.getForObject("http://payment/api", String.class);
+}
+
+resilience4j.bulkhead:
+  instances:
+    inventoryService:
+      maxConcurrentCalls: 5
+      maxWaitDuration: 1s
+
+
+
+
+
+

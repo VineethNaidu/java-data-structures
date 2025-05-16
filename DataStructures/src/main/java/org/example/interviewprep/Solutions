@@ -1,0 +1,399 @@
+Q: HashTable vs HashMap
+
+Similarities:
+1. Both use hash based data structure to store key value pairs.
+2. Both use Map<K, V> interface.
+3. Both do not allow duplicate keys.
+4. O(1) time complexity for all operations.
+5. Grow Dynamically when internal capacity of table is full.
+
+Differences:
+| Feature                 | `HashMap`                                                  | `Hashtable`                                  |
+| ----------------------- | ---------------------------------------------------------- | -------------------------------------------- |
+| 🔒 Thread Safety        | ❌ Not thread-safe                                          | ✅ Thread-safe (all methods are synchronized) |
+| ⚡ Performance           | ✅ Faster (no sync overhead)                                | ❌ Slower (synchronized methods)              |
+| 🧱 Null Key & Values    | ✅ Allows 1 `null` key and multiple `null` values           | ❌ Does **not** allow `null` key or values    |
+| 🕰️ Introduced In       | Java 1.2 (part of `java.util`)                             | Java 1.0 (legacy class)                      |
+| 🧱 Iterator Type        | **Fail-fast** (throws `ConcurrentModificationException`)   | **Fail-safe** (but less predictable)         |
+| 🔧 Legacy or Modern     | Modern, preferred for new code                             | Legacy, rarely used in new applications      |
+| 🧩 Alternative for Sync | Use `Collections.synchronizedMap()` or `ConcurrentHashMap` | Already synchronized                         |
+
+Note: Alternative for HashTable is ConcurrentHashMap (Synchronized & Thread Safety).
+
+Q: How Hash Works?
+
+Hashing:
+Hashing is a process of converting a key into an integer (called a hash code) using a hash function.
+This integer determines where to store or look up the value in a hash table (like an array).
+
+Internal Working of Hash Based Structure:
+map.put("Vini", 100);
+
+1. Keys hash code is computed. Every object in Java inherits hashCode() method from Object.
+    int hash = "Vini".hashCode(); // let's say it returns 738213
+
+2. Hash is adjusted to a non-negative value.
+    hash = (hash >>> 16) ^ hash;
+
+3. Index is calculated using modulo (or bitwise AND)
+   index = hash % capacity;
+   // OR in Java 8+: index = (n - 1) & hash;
+
+4. Check Collisions:
+    If no entry at index → insert directly.
+    If already occupied, compare keys using equals():
+        If equal → update the value.
+        If not equal → collision occurs → store using:
+            Linked List (Java 7 and before)
+            Balanced Tree (Java 8+, if too many collisions)
+
+5. Entry Stored in Bucket: as Node
+    static class Node<K,V> implements Map.Entry<K,V> {
+        final int hash;
+        final K key;
+        V value;
+        Node<K,V> next;
+    }
+
+6. Resizing:
+    When load factor exceeds the threshold (default is 0.75):
+        Capacity is doubled (e.g., 16 → 32)
+        All entries are rehashed and redistributed
+        This is expensive, so it's done cautiously
+
+Summary:
+          Key          →   hashCode()     →    hash spread   →  index (bucket)
+        "Vini"         →   738213         →    738245        →    5
+                                                             ↓
+                             Hash Table [index 5]
+                                 ↓
+                              [Node]
+                             key="Vini"
+                             value=100
+✅ Key Terms First
+Term	    Meaning
+Capacity	Number of buckets (slots) in the internal array. Default = 16
+Size	    Number of key-value pairs currently stored in the map
+Load Factor	A threshold ratio: size / capacity. Default is 0.75
+Threshold	When size exceeds this, the map resizes. It is capacity * load factor
+Bucket	    A slot in the array (indexed by hash) that stores entries, possibly in chains (list/tree)
+Rehashing	Process of recalculating bucket positions and redistributing all entries
+
+🔁 When Does HashMap Resize?
+HashMap resizes (doubles capacity) when:
+
+size ≥ capacity × loadFactor
+
+Example:
+capacity = 16
+loadFactor = 0.75
+threshold = 16 × 0.75 = 12
+👉 So when you add the 13th key, the map resizes.
+
+⚙️ What Happens During Resizing?
+Let’s walk through the resizing process step-by-step.
+
+🔹 Step 1: Double the Capacity
+The internal array is resized from oldCapacity to newCapacity = oldCapacity * 2.
+
+Node[] newTable = new Node[32];  // If old capacity was 16
+🔹 Step 2: Recalculate Indexes for All Entries
+Every existing key is rehashed and its new index in the bigger array is calculated.
+
+newIndex = hash & (newCapacity - 1)
+Note: The hash doesn’t change, but because capacity changed, index does.
+
+🔹 Step 3: Re-distribute All Entries
+All entries from the old array are moved to the new array.
+If a bucket has a chain (Linked List or Tree), the entire chain is re-linked and placed into the appropriate new bucket.
+This is a costly O(n) operation.
+
+🧪 Mini Example
+HashMap<String, Integer> map = new HashMap<>();
+Initial State:
+Capacity = 16
+
+Load Factor = 0.75
+Threshold = 16 × 0.75 = 12
+
+for (int i = 1; i <= 13; i++) {
+    map.put("Key" + i, i);
+}
+➡ On inserting the 13th entry, size (13) > threshold (12) → triggers resize:
+
+Capacity becomes 32
+Threshold becomes 32 × 0.75 = 24
+All 13 entries are rehashed and redistributed
+
+Q: Transaction in Java: All or Nothing
+
+Transaction is a sequence of operations that are executed as a single unit either fully completed or rollbacked.
+
+follows ACID Properties:
+Atomicity: All or nothing
+Consistency: Data is consistent -> 10 + 20 = 30
+Isolation: Data is isolated from other transactions
+Durability: Data is persistent
+
+1. JDBC Transactions:
+    You manage transactions manually using Connection object.
+
+   Connection conn = dataSource.getConnection();
+   try {
+       conn.setAutoCommit(false);
+
+       // Perform SQL operations
+       conn.commit();  // success
+   } catch (Exception e) {
+       conn.rollback();  // rollback on failure
+   }
+
+2. Spring Transactions: @Transactional-> Cleaner and Safer DB Operations
+
+@Service
+public class PaymentService {
+
+    @Transactional
+    public void processPayment() {
+        // All DB operations here are in a single transaction
+        // If exception occurs → everything is rolled back
+    }
+}
+
+Example:
+@Transactional
+public void transfer(Account from, Account to, double amount) {
+    withdraw(from, amount);
+    deposit(to, amount);
+}
+
+
+Q: Indexing:
+
+Indexing is crucial for improving the performance of database queries.it helps you find data faster without scanning the whole table.
+
+How Indexing internally works?
+Most relational databases (like MySQL, PostgreSQL, Oracle) implement indexes using:
+
+✅ 1. B-Tree (Balanced Tree) — default
+Keys are stored in sorted order
+Logarithmic search time: O(log n)
+Suitable for:
+    Exact match
+    Range queries (>, <, BETWEEN)
+    Sorting (ORDER BY)
+
+✅ 2. Hash Index (e.g., in-memory or NoSQL DBs)
+Uses hash function
+Super fast for exact lookups (=), not good for ranges
+Used in:
+    HashMap (Java)
+    Some NoSQL DBs (like MongoDB)
+
+How index implemented:
+    -- Create index on one column
+    CREATE INDEX idx_email ON users(email);
+
+    -- Composite index on multiple columns
+    CREATE INDEX idx_user_name_dob ON users(name, dob);
+
+Q:  View in Database?
+
+A view is a virtual table based on the result of a SQL query.
+It doesn’t store data itself, but displays data from one or more underlying tables.
+
+Example:
+CREATE VIEW active_users AS
+SELECT id, name, email
+FROM users
+WHERE status = 'ACTIVE';
+
+SELECT * FROM active_users;
+
+Q: Stored Procedures:
+Stored procedures are precompiled SQL statements that are stored in the database and can be executed
+as a single unit. SQL Stored Procedures are a powerful feature in database management systems (DBMS)
+that allow developers to encapsulate SQL code and business logic. When executed, they can accept
+input parameters and return output, acting as a reusable unit of work that can be invoked multiple times by users, applications, or other procedures.
+
+-- Create a stored procedure named "GetCustomersByCountry"
+CREATE PROCEDURE GetCustomersByCountry
+    @Country VARCHAR(50)
+AS
+BEGIN
+    SELECT CustomerName, ContactName
+    FROM Customers
+    WHERE Country = @Country;
+END;
+
+-- Execute the stored procedure with parameter "Sri lanka"
+EXEC GetCustomersByCountry @Country = 'Sri lanka';
+
+-- Drop the stored procedure
+DROP PROCEDURE GetCustomersByCountry;
+
+Q: Collision Techniques:
+Collision Techniques are used to resolve hash collisions that occur when two or more keys map to the same hash value.
+
+1. Separate Chaining (Open Addressing):
+    Each slot in the hash table contains a linked list of key-value pairs.
+    When a collision occurs, the new key-value pair is added to the end of the linked list.
+    This technique is useful when the number of keys is expected to be small.
+
+2. Linear Probing (Closed Addressing):
+    Each slot in the hash table contains a single key-value pair.
+    When a collision occurs, the new key-value pair is added to the next available slot in the table.
+    This technique is useful when the number of keys is expected to be large.
+
+3. Double Hashing:
+    When a collision occurs, a second hash function is used to determine the next slot.
+    This technique is useful when the number of keys is expected to be large.
+
+4. Quadratic Probing:
+    When a collision occurs, a quadratic probing function is used to determine the next slot.
+    This technique is useful when the number of keys is expected to be large.
+
+
+Q: OAuth vs JWT:
+
+OAuth: Open Authorization
+JWT: JSON Web Token
+
+OAuth:
+1. User → Client (Login with Google)
+2. Client → Auth Server: Redirects user to consent screen
+3. Auth Server: User logs in and consents
+4. Auth Server → Client: Sends Authorization Code
+5. Client → Auth Server: Exchanges Code for Access Token (and Refresh Token)
+6. Client → Resource Server: Uses Access Token to call APIs
+
+JWT:
+
+xxxxx.yyyyy.zzzzz
+│     │     └── Signature (verifies token)
+│     └──────── Payload (claims like userId, role)
+└────────────── Header (alg, typ)
+
+Header: { "alg": "HS256", "typ": "JWT" }
+Payload: { "sub": "12345", "role": "admin", "exp": 1711230000 }
+Signature: HMACSHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)
+
+How OAuth & JWT Work Together
+Client authenticates via OAuth
+OAuth server issues JWT token
+Client sends token in each API request:
+
+Authorization: Bearer eyJhbGciOi...
+
+Why JWT:
+| Feature            | Benefit                                          |
+| ------------------ | ------------------------------------------------ |
+| **Stateless**      | No need to store session in DB                   |
+| **Compact**        | Easy to transmit in headers                      |
+| **Self-contained** | Contains user info, roles, expiry                |
+| **Verifiable**     | Signature can be checked using secret/public key |
+
+Implementing OAuth + JWT in Spring Boot
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+</dependency>
+
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://auth-server.com
+
+@RestController
+public class HelloController {
+
+    @GetMapping("/hello")
+    public String hello(@AuthenticationPrincipal Jwt jwt) {
+        return "Hello, " + jwt.getSubject();
+    }
+}
+
+
+Associations in Java:
+
+1. One-to-one
+
+@Entity
+public class User {
+    @Id @GeneratedValue
+    private Long id;
+
+    private String name;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_id")  // FK column
+    private UserProfile profile;
+}
+
+@Entity
+public class UserProfile {
+    @Id @GeneratedValue
+    private Long id;
+
+    private String address;
+
+    @OneToOne(mappedBy = "profile")  // Bidirectional
+    private User user;
+}
+
+2. One-to-Many / Many-to-One
+
+@Entity
+public class Department {
+    @Id @GeneratedValue
+    private Long id;
+    private String name;
+
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
+    private List<Employee> employees;
+}
+
+@Entity
+public class Employee {
+    @Id @GeneratedValue
+    private Long id;
+    private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")  // FK in employee table
+    private Department department;
+}
+
+3. Many-to-Many
+
+@Entity
+public class Student {
+    @Id @GeneratedValue
+    private Long id;
+    private String name;
+
+    @ManyToMany
+    @JoinTable(
+        name = "student_course",  // Join table
+        joinColumns = @JoinColumn(name = "student_id"),
+        inverseJoinColumns = @JoinColumn(name = "course_id")
+    )
+    private List<Course> courses;
+}
+
+@Entity
+public class Course {
+    @Id @GeneratedValue
+    private Long id;
+    private String title;
+
+    @ManyToMany(mappedBy = "courses")
+    private List<Student> students;
+}
+
+
+Q:

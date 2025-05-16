@@ -9,8 +9,7 @@ class InvalidAgeException extends Exception {
 
 // Using the Custom Exception
 public class CustomCheckedException {
-    public static void validate(int age)
-            throws InvalidAgeException {
+    public static void validate(int age) throws InvalidAgeException {
         if (age < 18) {
             throw new InvalidAgeException("Age must be 18 or above.");
         }

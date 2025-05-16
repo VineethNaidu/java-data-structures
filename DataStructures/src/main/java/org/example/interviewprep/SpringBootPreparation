@@ -1,0 +1,316 @@
+Q: What is the difference between Spring vs Spring Boot?
+sol: Spring
+        Spring is a open source framework which provides infrastructure support for builder java enterprise applications.
+        Core Features:
+        1. Dependency Injection - Manage Object Creation
+        2. Spring MVC
+        3. Security
+        4. JDBC
+        5. Messaging
+
+        Used in:
+        1. Banking/Enterprise Application
+        2. Complex Web Applications
+
+     SpringBoot:
+        SpringBoot is a wrapper of Spring framework which makes easier and faster to develop applications.
+        Use SpringBoot to quickly create stand-alone, production-ready applications with minimal configuration.
+        Core Features:
+        1. Auto Configuration
+        2. Embedded Server
+        3. Production Ready Features - like metrics, health checks, etc.
+        4. Spring Boot Starter Dependencies – bundles commonly used libraries.
+
+        Used in:
+        1. Microservices
+        2. REST APIs
+
+Note: Spring -> Dependency Injection
+      SpringBoot -> AutoConfiguration (reduce development time, Effort, and increase productivity).
+
+Q2: Features of SpringBoot?
+Sol: AutoConfiguration: Spring Boot automatically configures dependencies by using @EnableAutoconfiguration annotation and reduces boilerplate code.
+     Actuator: Spring Boot Actuator provides health check, metrics and monitors the endpoints of the application.
+     Embedded Server: Spring Boot provides embedded server like Tomcat, Jetty, Undertow, etc.
+     Spring Boot Starter POM: pre-configured dependencies for functions like database, security, maven configuration etc.
+Advantages: Easy to use, Rapid Development, Scalable, Production Ready Code
+
+Q3: How SpringApplication.run(MyApplication.class, args) works?
+
+Sol:
+public class MyApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MyApplication.class, args);
+    }
+}
+1. SpringBoot App start with main method.
+
+2. Creation of Spring Application Instance
+    SpringApplication app = new SpringApplication(MyApplication.class);
+    1. Detects the type of application (web app, reactive app, etc.).
+    2. Finds and loads the main configuration class (annotated with @SpringBootApplication).
+    3. Sets up default configurations, listeners, and initializers.
+
+3. Run Method Execution
+    app.run(args);
+
+Summary:
+    main()
+      ↓
+    SpringApplication.run()
+      ↓
+    Create SpringApplication
+      ↓
+    Setup Environment, Listeners, Banner (Read from application.properties/yml, env variables, cmd line args) and ApplicationStartingEvent.etc
+      ↓
+    Create ApplicationContext (Spring Container)
+      ↓
+    Load & Register Beans (Scans the classpath for components: @Component, @Service, @Repository, @Controller, etc.)
+      ↓                   (Register Beans with DI/IOC Container, This step reads your source code and builds a graph of dependencies.)
+    Start Embedded Server (Tomcat/Jetty)
+      ↓
+    Run Runners (CommandLineRunner etc.)
+      ↓
+    Application Ready (Fires ApplicationReadyEvent.)
+
+Output: Your application is now live and ready to serve requests (REST endpoints, UI, etc.).
+
+Q4: What does the @SpringBootApplication annotation do internally?
+sol: @SpringBootApplication = @Configuration + @EnableAutoConfiguration + @ComponentScan
+
+@Configuration: Used to configures the beans in the class, that can be used in the Spring IoC Container.
+Eg:
+@Configuration
+public class MyConfig {
+
+    @Bean
+    public MyService myService() {
+        return new MyServiceImpl();
+    }
+}
+Spring treats this class as a configuration class.
+It processes all @Bean methods to create and register those objects in the Spring container.
+
+@EnableAutoConfiguration: it tells Spring Boot to automatically configure your application based on the dependencies present in the classpath.
+Eg: spring-boot-starter-web
+    It Configures:
+        Embedded Tomcat
+        Spring MVC
+        DispatcherServlet
+        Jackson (for JSON)
+
+@ComponentScan: It scans the class path for components (e.g., @Component, @Service, @Repository, @Controller, etc.) and registers them with the Spring IoC container.
+It makes a class as a Spring Bean and Loads into Spring IOC Container
+Eg: @ComponentScan(basePackages = "com.vini.project")
+Note: Without this, your annotated classes won’t be discovered, and Spring won't create their instances.
+
+Q5: What are Spring Boot CLI and the most used CLI commands?
+Sol: Spring Boot CLI is a command-line tool that can be used to create, run, and manage Spring Boot applications.
+
+Most used CLI commands:
+1. spring init --build
+2. spring init --dependencies web, data-jpa, data-jdbc, thymeleaf, mysql
+-run
+-test
+-jar
+-war
+–init
+-help
+
+Q6: SpringBoot Dependency Management?
+Sol: Life Cycle of dependencies:
+
+SpringBoot Application -> (Adds Dependencies) -> Maven(POM.xml) -> (Downloads Dependencies) -> Maven Central Repository -> (Stores Dependencies) -> .m2/repository/...
+
+Q7: Spring Boot Starter Dependencies?
+Sol: Spring Boot Starters are a collection of pre-configured maven dependencies that makes it easier to develop particular types of applications.
+
+Spring Boot Starters simplify dependency management by bundling commonly used libraries.
+
+Advantages:
+1. Increase productivity by reducing configuration time for development.
+2. POM Managing is easier.
+3. Easy to use, Rapid Developement, Scalable, Production Ready Code
+4. Tested, Production Ready, and Supported by Spring Boot.
+
+Eg: spring-boot-starter-data-jpa
+    spring-boot-starter-web
+    spring-boot-starter-thymeleaf
+    spring-boot-starter-security
+
+Q8: What is Spring Boot Actuator?
+Sol: Spring Boot Actuator provides health check, metrics, and monitors the endpoints of the application.
+
+Q: @RestController?
+Sol: @RestController = @Controller + @ResponseBody
+@Controller = Request Handler in the Spring MVC Framework
+@ResponseBody = Tells Spring Convert Method Return Values as Object into Http Response Instead of Views.
+
+Q9: Spring Profiles:
+Sol: 1. Spring Profiles allow you to segregate parts of your configuration and activate them conditionally based on the environment.
+     2. Instead of maintaining one massive configuration file with conditionals, you can separate configurations cleanly and load only what's relevant.
+
+✅ One app, 📦 different settings for different situations.
+
+Why use profiles?
+    Connect to different databases in dev vs prod
+    Enable debug logging only in dev
+    Use mock services in test, real ones in prod
+    Different property values for different environments
+
+How to define and use spring profiles?
+
+@Configuration
+@Profile("dev")
+public class DevDataSourceConfig {
+    @Bean
+    public DataSource devDataSource() {
+        // return H2 or other local DB
+    }
+}
+
+@Configuration
+@Profile("prod")
+public class ProdDataSourceConfig {
+    @Bean
+    public DataSource prodDataSource() {
+        // return a production-grade DB like PostgreSQL
+    }
+}
+
+YAML:
+# application.yml
+spring:
+  profiles:
+    active: dev
+
+---
+
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:h2:mem:testdb
+
+---
+
+spring:
+  profiles: prod
+  datasource:
+    url: jdbc:mysql://prod-db:3306/mydb
+
+Q10: ComponentScan?
+Sol: ComponentScan tells Spring to scan a package and detect all the Spring Components, like @Component, @Service, @Repository, @Controller, etc.
+
+IoC/DI:
+Achieves:
+    Clean architectures,
+    centralised management of Objects,
+    loose coupling,
+    easy to test and debug
+
+Q11: Inversion Of Control - IOC
+    IoC is a design principle in software development states that objects should be created by the container rather than the client.
+    It allows the container to create and manage the objects, rather than the client.
+
+    Without IOC: you have to create and manage dependencies
+    UserService userService = new UserService(new UserRepository());
+
+    With IOC: Spring creates and Injects Objects for you
+    @Component
+    public class UserService {
+        @Autowired
+        private UserRepository userRepository;
+    }
+
+Q12: Dependency Injection (DI):
+    Dependency Injection is the technique used to implement IoC.
+    It means injecting dependencies (objects) into a class rather than creating them inside the class.
+
+    Typos of DI:
+    1. Constructor Injection
+        @Component
+        public class UserService {
+            private final UserRepository userRepository;
+
+            @Autowired
+            public UserService(UserRepository userRepository) {
+                this.userRepository = userRepository;
+            }
+        }
+
+    2. Setter Injection
+        @Component
+        public class UserService {
+            private UserRepository userRepository;
+
+            @Autowired
+            public void setUserRepository(UserRepository userRepository) {
+                this.userRepository = userRepository;
+            }
+        }
+
+    3. Field Injection
+        @Component
+        public class UserService {
+            @Autowired
+            private UserRepository userRepository;
+        }
+
+How Spring IoC container works?
+    1. At startup, Spring scans for annotated components like @Component, @Service, @Repository, etc.
+    2. It creates the beans and resolves their dependencies.
+    3. It injects those beans into other beans wherever required.
+    4. All beans are managed inside the IoC Container (ApplicationContext).
+
+Annotation	Purpose
+@Component	Declares a class as a Spring-managed bean
+@Service	Specialized @Component for business logic
+@Repository	Specialized @Component for data layer
+@Controller	For Spring MVC controllers
+@Autowired	Tells Spring to inject a dependency
+@Qualifier	Resolves ambiguity when multiple beans
+
+Q13: @Beans in Spring?
+    Bean is an Java Object that is managed by the Spring IoC Container.
+    you can Declare Bean in spring configuration (@Bean, @Component, @Service, @Repository, @Controller, etc.)
+
+Q14: @Bean Life Cycle? (Process of Bean Creation until it's destruction)
+
+1. Instantiation: Spring creates instance of bean using constructor or factory method.
+2. Populate Properties: Spring Inject values into the beans using DI.
+3. BeanNameAware: If the bean implements this interface, Spring passes the bean's name.
+4. BeanFactoryAware/ApplicationContextAware: Spring injects references to the container.
+5. PostConstruct (Annotation) / InitializingBean.afterPropertiesSet(): Spring calls this method after all the properties are set.
+6. Ready For Use: Spring calls this method to indicate that the bean is ready for use.
+7. PreDestroy (Annotation) / DisposableBean.destroy(): Clean up resources before the bean is destroyed.
+
+Q15: Bean Scopes?
+Sol: Bean Scope defines the lifetime and visibility of a bean in the Spring IoC Container.
+
+Scope	Description
+singleton	(Default) One instance per Spring container
+prototype	New instance every time it's requested
+request	    One instance per HTTP request (only in web-aware Spring apps)
+session	    One instance per HTTP session (for web apps)
+application	One instance per servlet context
+websocket	One instance per WebSocket connection
+
+@Component
+@Scope("prototype") // Use "singleton" by default
+public class MyBean {
+    // fields and methods
+}
+
+Spring Data and JPA
+=========================================================================
+Q16: What is the difference between CrudRepository, JpaRepository, and PagingAndSortingRepository?
+Sol: All these are Spring Data Repository Interfaces, help you interact with database for entity operations. without writing boiler plate code.
+
+Hierarchy: '<' extends
+JpaRepository < PagingAndSortingRepository < CrudRepository
+
+CrudRepository: Basic CRUD operations
+PagingAndSortingRepository: Paging and sorting operations
+JpaRepository: Full JPA features, batch ops, best choice
+
+Q17: How do you implement custom queries in Spring Data JPA?

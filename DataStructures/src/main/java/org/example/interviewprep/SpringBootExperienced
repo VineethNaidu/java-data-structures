@@ -1,0 +1,84 @@
+Q1: How do you optimize the startup time of a Spring Boot application in a production environment?
+
+SOl:
+Lazy Initialization: Use spring.main.lazy-initialization=true to delay bean initialization until needed.
+Profile-Specific Configuration: Separate configurations per environment to avoid unnecessary loading.
+Component Scanning: Restrict the scope of component scanning using @ComponentScan to only include essential packages.
+Reduce Bean Creation: Avoid creating unnecessary beans during startup, especially for time-intensive services.
+
+By reducing the number of beans initialized upfront, you can significantly speed up application startup.
+
+Q2: How do you handle Global Exception Handling in a Spring Boot application?
+Sol: Using @RestControllerAdvice + @ExceptionHandler
+
+@RestControllerAdvice = @ControllerAdvice + @ResponseBody
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgs(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGeneral(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Unexpected error: " + ex.getMessage());
+    }
+}
+
+Q3: How do you validate user input in a Spring Boot application?
+Sol: Using @Valid + @Validated
+
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+
+public class UserDTO {
+
+    @NotBlank(message = "Name is required")
+    private String name;
+
+    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email is required")
+    private String email;
+
+    @Min(value = 18, message = "Age must be at least 18")
+    private int age;
+
+    // Getters and setters
+}
+
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    @PostMapping
+    public ResponseEntity<String> createUser(@Valid @RequestBody UserDTO userDto) {
+        // Save user or perform logic
+        return ResponseEntity.ok("User created successfully");
+    }
+}
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+            errors.put(error.getField(), error.getDefaultMessage())
+        );
+
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+}
+
