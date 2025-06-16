@@ -247,6 +247,62 @@ resilience4j.bulkhead:
 
 
 
+NCR:
+
+1. How 2 diff DBs are connected in the same service and how we fetch data from both DBs?
+2. How to handle million of requests in scalbale apps
+3. AtomicInteger in MultiThreading
+4. How forEach internally works
+5. How Kubernate clusters works
+6. Second Highest Salary
+7. No SQL DBs
+8. Kafka Zookeeper
+9. How JWT Token authorizes in our application
+
+class User {
+ String userName;
+ int age;
+ char gender;
+}
+
+list<Users> users;
+Q: Elg to Vote (18+)
+
+List<Users> elg;
+List<Users> Nelg;
+
+List<User> users = users.stream().collect(Collectors.groupingBy(user -> user.gender), Collectors.toList());
+
+
+class Thread1 extends Thread {
+
+}
+
+class Thread2 extedns Thread {
+}
+
+class Main {
+public static void main(String[] args) {
+	volatile int counter = 0;
+
+	Runnable t1 = (counter) -> counter;
+	Runnable t2 = (counter) -> counter;
+
+	t1.start();
+	t2.start();
+
+	SOP(Thread.currentThread.getName(), t1.counter);
+}
+}
+
+volatile counter;
+
+
+
+
+
+
+
 
 
 
