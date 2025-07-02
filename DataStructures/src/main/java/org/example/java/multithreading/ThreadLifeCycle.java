@@ -71,4 +71,34 @@ Blocked, Waiting, Timed_Waiting are ways a thread temporarily stops running.
 Terminated threads cannot be restarted. (Only once start is allowed.)
 
 
+wait() -> Causes the current thread to release the lock and enter the Waiting state.
+          The thread must hold the monitor lock, or else IllegalMonitorStateException occurs.
+
+Running ➔ Waiting
+
+synchronized (object) {
+    object.wait();
+}
+-------------------------
+notify() -> Wakes up a single thread that is waiting on the object's monitor.
+notifyAll() -> Wakes up all threads that are waiting on the object's monitor.
+
+That thread will move to Runnable when it reacquires the lock.
+Waiting ➔ Runnable (after lock is reacquired)
+
+synchronized (object) {
+    object.notify();
+}
+Inside a synchronized block.
+Doesn't immediately release the lock; it notifies a waiting thread, which proceeds after the current thread releases the lock.
+-----------------------
+join() -> Current thread waits for another thread to complete before resuming.
+
+t1.join();      // Current thread waits for t1 to finish
+t1.join(500);   // Wait for t1 up to 500 milliseconds
+
+Running ➔ Waiting or Timed Waiting
+
+
+
  */
